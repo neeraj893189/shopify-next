@@ -24,6 +24,7 @@ export type Product = {
   };
   variants?: {
     nodes: ProductVariant[];
+    pageInfo?: { hasNextPage: boolean; endCursor: string | null };
   };
   priceRange: {
     minVariantPrice: {

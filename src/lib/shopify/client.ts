@@ -9,6 +9,7 @@ const apiVersion = process.env.SHOPIFY_STOREFRONT_API_VERSION ?? "2026-07";
 export async function shopifyFetch<T>(
   query: string,
   variables: Record<string, unknown> = {},
+  cache = true,
 ): Promise<T> {
   if (!domain || !token) {
     throw new Error("Shopify environment variables are not configured.");
@@ -23,7 +24,7 @@ export async function shopifyFetch<T>(
         "X-Shopify-Storefront-Access-Token": token,
       },
       body: JSON.stringify({ query, variables }),
-      next: { revalidate: 60 },
+      ...(cache ? { next: { revalidate: 60 } } : { cache: "no-store" as const }),
     },
   );
 
@@ -36,5 +37,6 @@ export async function shopifyFetch<T>(
     throw new Error(result.errors.map((error) => error.message).join(", "));
   }
 
+  if (!result.data) throw new Error("Shopify returned no data.");
   return result.data;
 }

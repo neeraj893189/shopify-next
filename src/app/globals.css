@@ -1,6 +1,93 @@
 @import "tailwindcss";
+@import "./theme.css";
 
 @theme inline {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-hover: var(--primary-hover);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary-hover: var(--secondary-hover);
+  --color-button: var(--button);
+  --color-button-foreground: var(--button-foreground);
+  --color-button-hover: var(--button-hover);
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-foreground: var(--foreground);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-border-hover: var(--border-hover);
+  --color-focus-ring: var(--focus-ring);
+  --color-disabled: var(--disabled-background);
+  --color-disabled-foreground: var(--disabled-foreground);
+  --color-danger: var(--danger);
+  --color-overlay: var(--overlay);
+  --color-shadow: var(--shadow-color);
+}
+
+@layer base {
+  *, ::before, ::after {
+    border-color: var(--border);
+  }
+
+  :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 3px;
+  }
+
+  ::selection {
+    background: var(--primary);
+    color: var(--primary-foreground);
+  }
+
+  input::placeholder, textarea::placeholder {
+    color: var(--muted-foreground);
+    opacity: 1;
+  }
+}
+
+@layer components {
+  .button-primary {
+    background-color: var(--button);
+    color: var(--button-foreground);
+    transition: background-color 150ms, color 150ms;
+  }
+
+  .button-secondary {
+    background-color: var(--secondary);
+    color: var(--secondary-foreground);
+    transition: background-color 150ms, color 150ms;
+  }
+
+  .button-quiet, .theme-link {
+    color: var(--primary);
+    transition: background-color 150ms, color 150ms;
+  }
+
+  @media (hover: hover) {
+    .button-primary:hover {
+      background-color: var(--button-hover);
+    }
+
+    .button-secondary:hover, .button-quiet:hover {
+      background-color: var(--secondary-hover);
+      color: var(--secondary-foreground);
+    }
+
+    .theme-link:hover {
+      color: var(--primary-hover);
+    }
+  }
+
+  :is(.button-primary, .button-secondary, .button-quiet):is(:disabled, [aria-disabled="true"]) {
+    background-color: var(--disabled-background);
+    color: var(--disabled-foreground);
+    cursor: not-allowed;
+  }
+}
+
+body:has(dialog[open]) {
+  overflow: hidden;
 }

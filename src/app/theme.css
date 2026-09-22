@@ -1,0 +1,30 @@
+/* Warm ivory and olive theme. Change these values to brand another store. */
+:root {
+  --primary: #3f4935;
+  --secondary: #e8e3d7;
+  --button: var(--primary);
+
+  /* Text colors on the brand fills. Override for light brand colors. */
+  --primary-foreground: #fbf9f3;
+  --secondary-foreground: #505443;
+  --button-foreground: var(--primary-foreground);
+
+  /* Page, panel, and body text colors. */
+  --background: #f7f5ef;
+  --surface: #fffdf8;
+  --foreground: #2e3029;
+  --danger: #9b3c32;
+
+  /* Derived states update with the colors above; override if needed. */
+  --primary-hover: color-mix(in srgb, var(--primary) 85%, var(--primary-foreground));
+  --secondary-hover: color-mix(in srgb, var(--secondary) 92%, var(--secondary-foreground));
+  --button-hover: color-mix(in srgb, var(--button) 85%, var(--button-foreground));
+  --muted-foreground: color-mix(in srgb, var(--foreground) 70%, var(--surface));
+  --border: color-mix(in srgb, var(--foreground) 14%, var(--surface));
+  --border-hover: var(--primary);
+  --focus-ring: var(--primary);
+  --disabled-background: color-mix(in srgb, var(--button) 12%, var(--surface));
+  --disabled-foreground: color-mix(in srgb, var(--foreground) 60%, var(--surface));
+  --overlay: color-mix(in srgb, var(--foreground) 30%, transparent);
+  --shadow-color: color-mix(in srgb, var(--foreground) 15%, transparent);
+}

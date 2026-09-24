@@ -4,7 +4,7 @@ import { useState } from "react";
 import { AddToCartButton } from "@/components/AddToCartButton";
 import type { Product } from "@/lib/shopify/types";
 
-export function ProductPurchase({ product }: { product: Product }) {
+export function ProductPurchase({ product, compact = false }: { product: Product; compact?: boolean }) {
   const variants = product.variants?.nodes ?? [];
   const initialVariant = variants.find((variant) => variant.availableForSale) ?? variants[0];
   const [selectedVariantId, setSelectedVariantId] = useState(initialVariant?.id ?? "");
@@ -18,8 +18,8 @@ export function ProductPurchase({ product }: { product: Product }) {
       <p className="mt-5 text-xl text-foreground" aria-live="polite">
         {new Intl.NumberFormat("en-US", { style: "currency", currency: price.currencyCode }).format(Number(price.amount))}
       </p>
-      <div className="mt-8 border-y border-border py-8">
-        <p className="whitespace-pre-line text-sm leading-7 text-muted-foreground">{product.description}</p>
+      <div className={compact ? "mt-4 border-y border-border py-4" : "mt-8 border-y border-border py-8"}>
+        <p className={`whitespace-pre-line text-sm leading-7 text-muted-foreground ${compact ? "line-clamp-4" : ""}`}>{product.description}</p>
       </div>
       {variants.length > 1 ? (
         <div className="mt-8">
@@ -27,7 +27,14 @@ export function ProductPurchase({ product }: { product: Product }) {
             <span>Options</span>
             <span className="text-muted-foreground">Select one</span>
           </div>
-          <div className="grid gap-2">
+          {compact ? <label className="block text-sm">
+            <span className="sr-only">Product option</span>
+            <select value={selectedVariant?.id ?? ""} onChange={event => setSelectedVariantId(event.target.value)} className="w-full rounded-xl border border-border bg-surface p-3 text-foreground">
+              {variants.map(variant => <option key={variant.id} value={variant.id} disabled={!variant.availableForSale}>
+                {variant.title}{variant.availableForSale ? "" : " — Sold out"}
+              </option>)}
+            </select>
+          </label> : <div className="grid gap-2">
             {variants.map((variant) => {
               const isSelected = variant.id === selectedVariant?.id;
 
@@ -53,7 +60,7 @@ export function ProductPurchase({ product }: { product: Product }) {
                 </button>
               );
             })}
-          </div>
+          </div>}
         </div>
       ) : null}
 
@@ -61,7 +68,7 @@ export function ProductPurchase({ product }: { product: Product }) {
         key={selectedVariant?.id}
         variantId={selectedVariant?.id ?? ""}
         disabled={!hasAvailableVariant}
-        className="button-primary mt-8 w-full px-6 py-4 text-sm font-medium"
+        className={`button-primary mt-8 w-full px-6 py-4 text-sm font-medium ${compact ? "rounded-xl" : ""}`}
       />
     </>
   );

@@ -18,6 +18,8 @@ export type Product = {
   handle: string;
   title: string;
   description: string;
+  availableForSale?: boolean;
+  productType?: string;
   featuredImage: ShopifyImage | null;
   images?: {
     nodes: ShopifyImage[];

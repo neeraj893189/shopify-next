@@ -1,16 +1,12 @@
-import { cache } from "react";
-import Image from "next/image";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { shopifyFetch } from "@/lib/shopify/client";
-import { COLLECTION_QUERY, PRODUCT_QUERY } from "@/lib/shopify/queries";
-import type { Product } from "@/lib/shopify/types";
+import { COLLECTION_QUERY } from "@/lib/shopify/queries";
+import { getProduct } from "@/lib/shopify/product";
 import { ProductPurchase } from "@/components/ProductPurchase";
 import { Breadcrumb, type BreadcrumbItem } from "@/components/Breadcrumb";
-
-type ProductResponse = {
-  product: Product | null;
-};
+import { ProductGallery } from "@/components/ProductGallery";
+import { RecentlyViewedProducts } from "@/components/RecentlyViewedProducts";
 
 type ProductPageProps = {
   params: Promise<{ handle: string }>;
@@ -24,20 +20,6 @@ async function getCollection(handle?: string) {
   }>(COLLECTION_QUERY, { handle });
   return collection;
 }
-
-const getProduct = cache(async (handle: string) => {
-  const { product } = await shopifyFetch<ProductResponse>(PRODUCT_QUERY, { handle });
-  if (!product) return null;
-  let page = product.variants;
-  const variants = [...(page?.nodes ?? [])];
-  while (page?.pageInfo?.hasNextPage && page.pageInfo.endCursor) {
-    const response = await shopifyFetch<ProductResponse>(PRODUCT_QUERY, { handle, after: page.pageInfo.endCursor });
-    page = response.product?.variants;
-    if (!page) throw new Error("Unable to load product options.");
-    variants.push(...page.nodes);
-  }
-  return { ...product, variants: { nodes: variants } };
-});
 
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
   const { handle } = await params;
@@ -95,20 +77,7 @@ export default async function ProductPage({ params, searchParams }: ProductPageP
       <Breadcrumb items={breadcrumbs} />
 
       <div className="mt-8 grid gap-12 lg:grid-cols-[minmax(0,1.15fr)_minmax(320px,0.85fr)] lg:gap-20">
-        <div className="grid grid-cols-2 gap-3">
-          {images.map((image, index) => (
-            <div key={`${image.url}-${index}`} className={`relative aspect-[4/5] overflow-hidden bg-secondary ${index === 0 ? "col-span-2" : ""}`}>
-              <Image
-                src={image.url}
-                alt={image.altText ?? product.title}
-                fill
-                priority={index === 0}
-                className="object-cover"
-                sizes={index === 0 ? "(min-width: 1024px) 55vw, 100vw" : "(min-width: 1024px) 27vw, 50vw"}
-              />
-            </div>
-          ))}
-        </div>
+        <ProductGallery images={images} title={product.title} />
 
         <section className="lg:sticky lg:top-8 lg:self-start">
           <p className="text-sm uppercase tracking-[0.18em] text-primary">Shopify collection</p>
@@ -116,6 +85,8 @@ export default async function ProductPage({ params, searchParams }: ProductPageP
           <ProductPurchase key={product.id} product={product} />
         </section>
       </div>
+
+      <RecentlyViewedProducts product={product} />
     </main>
   );
 }

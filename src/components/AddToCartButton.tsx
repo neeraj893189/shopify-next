@@ -53,7 +53,7 @@ export function AddToCartButton({
       {isAdding ? "Adding..." : disabled ? "Sold out" : buttonText}
     </button>
     {error ? <p role="alert" className="mt-2 text-sm text-danger">{error}</p> : null}
-    <p role="status" className="mt-2 text-sm text-muted-foreground">{added ? "Added to cart." : ""}</p>
+    <p role="status" className={added ? "mt-2 text-sm text-muted-foreground" : "sr-only"}>{added ? "Added to cart." : ""}</p>
     </>
   );
 }

@@ -1,13 +1,19 @@
-import type { Metadata } from "next";
-import { HomeSections } from "@/components/HomeSections";
-import { getHomeContent } from "@/lib/contentful";
 
-export async function generateMetadata(): Promise<Metadata> {
-  const home = await getHomeContent();
-  return { title: home.title, description: home.description, openGraph: { title: home.title, description: home.description, type: "website" } };
-}
+import HeroSlider from "@/components/contentful/homepage/HeroSlider";
+import { getHomepage } from "@/lib/contentful/homepage";
 
 export default async function Home() {
-  const home = await getHomeContent();
-  return <HomeSections sections={home.sections} />;
+  const banner = await getHomepage();
+
+  if (!banner) {
+    return <main>Banner not found</main>;
+  }
+
+  const heroImages = banner.fields.heroImages ?? [];
+
+  return (
+    <main>
+      <HeroSlider images={heroImages as any} />
+    </main>
+  );
 }

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Send } from "lucide-react";
 
+
 import ChatMessage from "./ChatMessage";
 
 
@@ -13,7 +14,7 @@ type Message = {
 };
 
 
-export default function ChatWindow() {
+export default function ChatWindow({ chatUrl }: { chatUrl?: string }) {
 
   const [input, setInput] = useState("");
 
@@ -77,6 +78,9 @@ export default function ChatWindow() {
 
 
     try {
+      if (!chatUrl) {
+        throw new Error("CHAT_ASSISTANT_BASE_URL is not configured");
+      }
 
       // --------------------------------------------
       // Create conversation history
@@ -96,7 +100,7 @@ export default function ChatWindow() {
       // --------------------------------------------
 
       const response = await fetch(
-        "http://127.0.0.1:8000/chat",
+        chatUrl,
         {
           method: "POST",
 

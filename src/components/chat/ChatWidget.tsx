@@ -4,14 +4,14 @@ import { useState } from "react";
 import { MessageCircle, X } from "lucide-react";
 import ChatWindow from "./ChatWindow";
 
-export default function ChatWidget() {
+export default function ChatWidget({ chatUrl }: { chatUrl?: string }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <>
       {isOpen && (
         <div className="fixed bottom-24 right-6 z-[9999]">
-          <ChatWindow />
+          <ChatWindow chatUrl={chatUrl} />
         </div>
       )}
 

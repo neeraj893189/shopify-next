@@ -22,7 +22,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         <Header navigation={navigation} />
         {children}
 
-           <ChatWidget />
+        <ChatWidget chatUrl={process.env.CHAT_ASSISTANT_BASE_URL} />
       </body>
     </html>
   );
